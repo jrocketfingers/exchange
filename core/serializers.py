@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Wallet, User
+from core.models import Wallet, User, Order, Symbol
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,3 +24,13 @@ class DepositSerializer(serializers.Serializer):
             raise serializers.ValidationError("Amount cannot be less than 0")
 
         return value
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    symbol = serializers.SlugRelatedField(
+        slug_field="ticker", queryset=Symbol.objects.all()
+    )
+
+    class Meta:
+        model = Order
+        fields = ["id", "symbol", "user", "quantity", "price", "side"]
